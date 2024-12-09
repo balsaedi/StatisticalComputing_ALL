@@ -1,0 +1,1026 @@
+# General Statistics
+  
+In this course, we will require the ecommerce data set that can be downloaded from [here](https://www.kaggle.com/datasets/shrishtimanja/ecommerce-dataset-for-data-analysis/data). 
+
+Lets load the data set
+```{r}
+ecommerce <- read.csv("data/ecommerce.csv")
+
+# First few rows of the data set 
+head(ecommerce)
+```
+
+We will explore the fundamentals of statistics using the data set that is packed with real-life insights on customers and their purchasing behavior. At the end of this course unit you will be able to understand;
+
+- Measure of spread and central tendency
+  - Mean(the average)
+  - Mode
+  - Quartiles
+  - Range(IQR, maximum and minimum)
+  - Standard deviation and variance
+
+- Data Visualizations 
+  - Relationship(scatter plot and heatmaps)
+  - Trend(line chart)
+  - Distribution(histograms and density plots)
+  - Comparison(bar charts)
+  - Composition (pie charts)
+  - Outliers (boxplots and violin plots)
+  
+- Inferential Statistics
+  - Hypothesis testing 
+  - T-tests( one sample, anova, chi-square)
+
+## Measure of Spread and Central Tendency
+
+Central tendency identifies the center or typical value of a data set. Measuring central tendency summarizes the data by identifying skewness, distribution and how the data is robust to outliers. Business calculate the central tendencies like average sales, median customer age to make informed decision-making.
+
+Here are some of the statistical concepts used to define central tendecy and spread;
+
+a. Mean
+b. Mode
+c. Quartiles(Median, upper and lower quartile)
+d. Range and IQR 
+e. Variance and standard deviation
+
+  a.**Arithmetic mean**
+
+It is also referred to as the average. It is the sum of all values divided by the number of values in the set. R has a function `mean` to calculate the average. 
+
+Here is the formula for mean; $$\overline{x} ={ \sum^{n}_{i=1}x_i\over{n}}$$
+
+Where;
+
+- $\overline{x}$ is the mean
+- $x_i$ represent value at position $i$
+- $n$ is the number(count) of values in a set
+
+Lets calculate the average net amount spent on the ecommerce store. 
+```{r}
+# Calculate the mean net amount
+mean(ecommerce$Net.Amount)
+```
+
+The average amount spent on the e-commerce store by all the customers was 2875.95 INR. 
+
+b. **Mode**
+
+The mode shows the most frequent value, thereby pinpoint the most popular categories in a data set. In the commerce data set we will find the most popular category and age group in the data set. 
+
+Find the most popular category
+```{r}
+# Calculate the mode for 'ProductCategory'
+table(ecommerce$Product.Category)
+which.max(table(ecommerce$Product.Category))
+```
+
+c. **Quartiles**
+
+These are values that divide a data set into four equal parts, each representing the 25% of the data points. They help describe the spread of the data, providing insights into the distribution's shape and spread. 
+
+The quartiles are;
+
+  i. *First Quartile(Q1)* - The $25^{th}$ percentile; the value below which 25% of the data falls. Also known as the lower quartile. 
+  ii. *Median(Q2)* - Also known as the second quartile; the middle of the data set, where half of the values are above and another half of the values are below. 
+  iii. *Third quartile(Q3)* - The $75^{th}$ percentile; the value below which 75% of the data falls. 
+  
+Using quartiles, we can calculate the **Interquartile Range (IQR)**, which measures the spread of the middle 50% of the data. $$IQR = Q3 - Q1$$
+
+<span style="color: orange;">**Try it!**</span> 
+
+Lets put this into action; we will create a vector ages and calculate the quartiles. 
+
+`ages <- c(21, 27, 55, 13, 87, 51, 33, 64, 40)`
+
+Lets line the ages in an ascending order 
+
+`ages <- c(13, 21, 27, 33, 40, 51, 55, 64, 87)`
+
+Finding the; 
+  - median, will be middle value which is `40`.
+  - Q1, is the median of the lower half which is
+```
+Q1  = (21 + 27)/2 = 24
+```
+  - Q3, is the median of the upper half which is
+```
+Q3 = (55 + 64)/2 = 59.5
+```
+
+Using R to calculate quartiles using the `quantile()` function;
+```{r}
+ages <- c(21, 27, 55, 13, 87, 51, 33, 64, 40)
+
+# Calculate the quartiles 
+quantile(ages, type=2, probs = c(0.25, 0.5, 0.75))
+```
+
+
+d. **Range**
+
+To understand range, we will define, maximum and maximum values. The **maximum** value is the largest value in a set while the **minimum** is the smallest value in a set. **Range** is the difference between the maximum(largest value) and the minimum value in a set. 
+
+Here is a formula for range; $$Range = Max - Min$$
+
+Lets create a vector `ages` that defines the ages of different customers on a retail stores, find the maximum and minimum ages then calculate the range. 
+```{r}
+# Create vector ages
+ages <- c(21, 27, 55, 13, 87, 51, 33, 64)
+
+# Find the maximum
+max(ages)
+
+# Find the minimum 
+min(ages)
+
+# Calculate the range 
+diff(range(ages))
+```
+
+<span style="color: orange;">**Try it!**</span> 
+
+Now its clear what range, lets get into the real-world scenario. We will find the maximum and minimum `Gross.Amount` spent on the ecommerce store. Finally, we calculate the range of amount spent by customers(`Gross.Amount`)
+```{r}
+# Maximum amount spent by customers 
+max(ecommerce$Gross.Amount)
+
+# Minimum amount spent by customers
+min(ecommerce$Gross.Amount)
+
+# Range 
+diff(range(ecommerce$Gross.Amount))
+```
+
+e. **Standard deviation and Variance** 
+
+Variance is statistical measure of dispersion that defines how spread the data points are in a data set in relation to the mean of the data set. Standard deviation is the measure of how data is clustered around the mean. It is simply defined to as the square root of variance.
+
+Here is the formula of variance; $$\sigma = {\sum(x_i - \overline{x})^2 \over{n}}$$
+
+Where;
+
+- $\sigma$ is the variance
+- $x_i$ is the value
+- $\overline{x}$ is the population mean
+- $n$ is the value count
+
+Standard is simply the square root of variance, Here is the formula for standard deviation; $$S = \sqrt{\sigma}$$ or $$S = \sqrt{{\sum(x_i - \overline{x})^2 \over{n}}}$$
+
+Where $S$ is the standard deviation. 
+
+Variance and standard deviation can be calculated in R environment using `var()` and `sd()` functions respectively.
+
+Lets create a vector of weights of the athletes in kilograms and calculate the variance and standard deviation.
+```{r}
+# Sample vector 
+athlete_weights = c(55, 76, 52, 68, 71, 63, 58, 52, 85, 96)
+
+# Calculate variance
+var(athlete_weights)
+
+# Calculate the standard deviation
+sd(athlete_weights)
+```
+
+Lets put into real world practice and calculate variance and standard deviation of net amount spent on the ecommerce store. 
+```{r}
+# Variance
+var(ecommerce$Net.Amount)
+
+# Standard deviation
+sd(ecommerce$Net.Amount)
+
+```
+
+<span style="color: green;">**Practical Exercise**</span> 
+
+Using the ecommerce data set provided at the beginning of the course, calculate the following metrics for the gross amount with R;
+
+1. Mean
+2. Median and IQR
+3. Maximum, minimum and range 
+4. Standard deviation and variance.
+
+_______________________________________________________________________
+<span style="color: brown;">**Solution**</span> 
+
+- Read the data set 
+```{r}
+ecommerce = read.csv("data/ecommerce.csv")
+gross_amount <- ecommerce$Gross.Amount
+```
+
+1. Mean
+```{r}
+mean(gross_amount)
+```
+
+2. Median and IQR
+```{r}
+# Calculate the median
+median(gross_amount)
+
+# Calculate the IQR
+IQR(gross_amount)
+```
+
+3. Maximum, minimum and range 
+```{r}
+# Minimum
+min(gross_amount)
+
+# Maximum 
+max(gross_amount)
+
+# Range
+diff(range(gross_amount))
+```
+
+4. Standard deviation and variance.
+```{r}
+# Variance 
+var(gross_amount)
+
+# Standard deviation
+sd(gross_amount)
+```
+<span style="color: brown;">**________________________________________________________________________________**</span>
+
+## Data Visualization
+
+Data visualization is the process of using visual elements like chart, graphs or maps to represent data in a way that is easier to understand. 
+
+Luckily, R has a package, `ggplot2`, specifically designed to create charts and graphs. The package is said to implement the "Grammar of Graphics" that is a conceptual framework for creating graphs by Leland Wilkinson. 
+
+The package can be installed by; 
+```
+install.packages("ggplot2")
+```
+
+and once the package is installed it is loaded by;
+```{r}
+library(ggplot2)
+```
+
+Lets create simple charts with the `ggplot2` package. 
+
+a. **Scatter plots**
+
+Scatter plot is used to show the numerical relationship between two or more. Lets create a simple plot.
+```{r}
+# Sample data
+df <- data.frame(
+  x = rnorm(100),
+  y = rnorm(100)
+)
+
+# Creating a scatter plot
+ggplot(df, # data
+       aes(x = x, y = y)) + #aesthetics
+  geom_point() + #geometrics
+  labs(title = "Scatter Plot Example", x = "X Values", y = "Y Values") +
+  theme_minimal()
+```
+
+<span style="color: orange;">**Try it!**</span> 
+
+Lets make it more interesting by exploring the real world scenario where we will visualize the relationship between Discount and the Net Amount on the ecommerce store. 
+```{r}
+# Creating a scatter plot
+ggplot(ecommerce[1:100, ], # first 100 rows of the data
+       aes(x = Net.Amount, y = Discount.Amount..INR.)) + #aesthetics
+  geom_point() + #geometrics
+  labs(title = "Relationship between Net Amount and the Discount", 
+       x = "Net Amount", 
+       y = "Discount") +
+  theme_minimal()
+```
+
+The scatter chart above shows that there is no clear relationship between the Net Amount spent and the discount offered since at every spending(low, medium or high) had low or high discount. High spending did not necessarily guarantee low or high discount. 
+
+b. **Line Chart** 
+
+Line Chart is used to show trend(Growth or fall over time). Let create a simple line chart to show this;
+```{r}
+# Sample data 
+dates <- c("2023-10-01", "2023-10-05", "2023-10-10", "2023-10-15", "2023-10-20", "2023-10-25", "2023-10-30", "2023-11-04", "2023-11-09", "2023-11-14")
+scores <- c(75, 82, 88, 85, 90, 87, 92, 95, 98, 100)
+
+# Create a data frame 
+df <- data.frame(
+  date = as.Date(dates),
+  scores = scores
+)
+
+# Plot a scatter plot 
+ggplot(df, # data
+       aes(x=date, y=scores)) + 
+  geom_line()+
+  labs(
+    title = "Scores progression from October to November",
+    x = "Date",
+    y = "Scores"
+  ) + 
+  theme_minimal()
+```
+
+There has a been a gradual increase of scores from October to November. 
+
+<span style="color: orange;">**Try it!**</span> 
+
+Lets put this into a real world scenario. We will plot the Gross Amount spent by Customers over the years at the ecommerce store. 
+```{r}
+# Convert the purchase date to date type 
+ecommerce$Purchase.Date <- as.Date(ecommerce$Purchase.Date)
+
+# Plot a scatter plot 
+ggplot(ecommerce[1:100, ], # data
+       aes(x=Purchase.Date, y=Gross.Amount)) + 
+  geom_line()+
+  labs(
+    title = "Gross Amount spent over time",
+    x = "Purchase Date",
+    y = "Gross Amount"
+  ) + 
+  theme_minimal()
+```
+
+There has been gradual spikes of rise and fall of the amount spent on the store. 
+
+c. **Histograms and Density Plots**
+
+Histograms and Density plots are used to show the distribution of continuous variables. Histogram is visually similar to the bar chart however it is used show frequency and distribution across a list-like data set(vectors, lists, sets, arrays, etc) that stores continuous numeric values. The count of observation within a certain range of values are displayed.
+
+Lets create a vector of random 100 ages and plot the data to a histogram.
+```{r}
+# Generate random 1000 ages between 0 and 100
+set.seed(42)
+ages <- sample(0:100, 1000, replace = TRUE)
+
+# Create a data frame to use with ggplot
+age_data <- data.frame(Age = ages)
+
+# PLOTTING
+# Create the histogram using ggplot
+ggplot(age_data, aes(x = Age)) +
+  geom_histogram(binwidth = 5, fill = "blue", color = "black") +
+  labs(
+    title = "Histogram of Randomly Generated Ages", 
+    x = "Age", 
+    y = "Frequency") +
+  theme_minimal()
+```
+
+The bins are groups of ages ranging 5 years
+
+<span style="color: orange;">**Try it!**</span>
+
+Lets put his into action and plot the distribution of Discount offered on the ecommerce store
+```{r}
+# Create the histogram using ggplot
+ggplot(ecommerce, 
+       aes(x = Discount.Amount..INR.)) +
+  geom_histogram(bins = 10, fill = "blue", color = "black") +
+  labs(
+    title = "Histogram of Discount offered", 
+    x = "Discount", 
+    y = "Frequency") +
+  theme_minimal()
+```
+
+The distribution is right skewed and most of the customers in the store were offered very low discount for their purchases. 
+
+**Check it later and speak about density plots**
+
+d. **Bar Charts**
+
+Bar charts are used to represent both categorical and numeric data in form of rectangular bars. The length/height of each category represents its numeric value. It may corresponds to either length, count, age or any other numerical value. Bar charts are used when;-
+
+i. Comparing categorical data
+ii. Visualizing summarized data for instance aggregated sum, average or any other summary statistics.
+iii. Showing frequency or count for instance representing the number of products sold per each category.
+iv. Ranking data. Bar charts can effectively represents ranks especially in descending/ascending order for instance ranking the life expectancy of different countries.
+v. Other type of complex bar charts like stacked bar charts can be used to compare part-to-whole relationships.
+
+There are many more uses of bar charts however there are some use cases where bar charts are not preferred like when working with continuous data, scatter and line charts are more befitting. Also, bar charts are not appropriate where data has too many categories, heatmaps will do better.
+
+To create a simple bar chart using `ggplot2`, we use `geom_bar` to define that its a bar chart.
+```{r}
+# Sample data
+df <- data.frame(
+  category = c("A", "B", "C", "D"),
+  value = c(23, 17, 35, 10)
+)
+
+## The data set above will be used to create a bar chart
+# Creating a bar chart
+ggplot(df, 
+       aes(x = category, y = value)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Value by Category", 
+    x = "Category", 
+    y = "Value") +
+  theme_minimal()
+```
+
+From the bar chart above, Category "C" has the largest value while category "D" has the lowest value. 
+
+<span style="color: orange;">**Try it!**</span>
+
+Lets create a bar chart of a real world scenario. We will calculate the average Gross amount spent by different age groups in the ecommerce store. 
+```{r}
+library(plyr)
+
+# Aggregate by mean
+PurchasebyAge <- aggregate(Gross.Amount ~ Age.Group,
+                           data = ecommerce,
+                           FUN = mean
+                           )
+
+# Plot a bar chart
+ggplot(PurchasebyAge, 
+       aes(x = Age.Group, y = Gross.Amount)) +
+  geom_bar(stat = "identity", fill="blue", color="white") +
+  labs(
+    title = "Average Gross Amount by Age Group", 
+    x = "Age Group", 
+    y = "Average Gross Amount") +
+  theme_minimal()
+```
+
+All the age group had an almost equal average spending on the ecommerce store. 
+
+What if we calculated the total spending for each age group? That would be interesting! Lets calculate and plot a bar chart to represent that. 
+```{r}
+# Aggregate by sum
+PurchasebyAge <- aggregate(Gross.Amount ~ Age.Group,
+                           data = ecommerce,
+                           FUN = sum
+                           )
+
+# Plot a bar chart
+ggplot(PurchasebyAge, 
+       aes(x = Age.Group, y = Gross.Amount)) +
+  geom_bar(stat = "identity", fill="blue", color="white") +
+  labs(
+    title = "Total Gross Amount by Age Group", 
+    x = "Age Group", 
+    y = "Total Gross Amount") +
+  theme_minimal()
+```
+
+Age 25 - 45 had the highest total spending in the ecommerce store while age of 60 and above had the least total spending. 
+
+
+f. **Boxplots and Violin Plots**
+
+Box plot is a type of chart that uses boxes and lines to show distributions of one or more groups of a continuous numeric data. They provide a high-level information at a glance for instance the data symmetry, skew and variance. They can also be used to show outliers within a data set. This is the only chart that can effectively give the measure of spread and central tendency(median, quartiles and range).
+
+<span style="color: orange;">**Try it!**</span> 
+
+We will plot a boxplot of the Net Amount spent on the ecommerce store.
+
+```{r}
+library(ggplot2)
+
+# Plot a boxplot
+ggplot(ecommerce, aes(y=Net.Amount))+
+  geom_boxplot(fill="black")
+```
+
+The upper and lower boundaries represents the upper(Q3) and lower(Q1) quartiles respectively. In out case the upper quartile is about 4200INR and the lower quartile is approximately 1500. The median is represented by the line cutting through the box, whereby in our case is approximately 2800 INR. The maximum value is the uppermost point of the boxplot which is approximately 8300INR. Finally, the minimum is the bottom of the plot which is approximately 350INR. 
+
+<span style="color: green;">**Practical Exercise**</span>
+
+To enhance your understanding in basic data visualizations, you will be required to use the inbuilt diamonds data set and follow the instructions below. 
+
+i. Plot a bar chart to show the count of diamonds by `cut` quality. 
+ii. Generate a scatter plot to show the relationship between `carat` and `price`.
+iii. Plot a histogram of the `price` of diamonds. 
+iv. Create a boxplot to compare the price distributions across different different diamond `color` categories. 
+v. Visualize the male and female passengers in each class. 
+
+**Hint: ** The titanic data set is loaded as below 
+```
+data("diamonds")
+```
+
+_______________________________________________________________________
+<span style="color: brown;">**Solution**</span> 
+
+- Load the required libraries and data set.
+```{r}
+library(ggplot2) # library for visualization
+
+data("diamonds") # Load diamonds data 
+```
+
+i. Plot a bar chart to show the count of diamonds by `cut` quality. 
+```{r}
+ggplot(diamonds, 
+        aes(x=cut)) + 
+  geom_bar(fill="skyblue") + 
+  labs(
+    title = "Count of diamonds by cut",
+    x = "Cut Quality",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+Most diamonds had an ideal cut quality while least of them had a fair cut quality
+
+ii. Generate a scatter plot to show the relationship between `carat` and `price`.
+```{r}
+ggplot(diamonds,
+       aes(x = carat, y = price)) +
+  geom_point(color = "darkblue", alpha=0.5) +
+  labs(
+    title = "Carat vs Price", 
+    x = "Carat",
+    y = "Price"
+  ) + 
+  theme_classic()
+```
+
+The relationship between Carat and Price was almost directly proportional where higher carat was equal to higher prices. 
+
+iii. Plot a histogram of the `price` of diamonds. 
+```{r}
+ggplot(diamonds, 
+       aes(x = price)) + 
+  geom_histogram(bins=30, fill="orange", color="black") + 
+  labs(
+    title = "Diamond Prices distribution", 
+    x = "Price", 
+    y = "Count"
+  ) + 
+  theme_light()
+```
+
+The distribution of diamond prices was right-skewed. Most of the diamonds had prices lower than 5000
+
+iv. Create a boxplot to compare the price distributions across different different diamond `color` categories. 
+```{r}
+ggplot(diamonds,
+       aes(x=color, y=price, fill=color)) + 
+  geom_boxplot() + 
+  labs(
+    title = "Diamond Prices distribution by color", 
+    x = "Diamond color",
+    y = "Price"
+  ) + 
+  theme_dark()
+```
+
+<span style="color: brown;">**________________________________________________________________________________**</span>
+
+## Inferential Statistics
+### Introduction to Hypothesis Testing
+#### Concept of Hypothesis Testing
+
+Hypothesis testing is a type of statistical analysis that is used to make assumptions of a population based on a sample of data. It is particularly used to find the relationship between two variables(populations). A real life example of hypothesis testing is that a teacher may assume that 60% of the students come from a middle-class family. There are two types of hypothesis; 
+
+  - Null hypothesis($H_0$)
+  - Alternate hypothesis ($H_1$ or $H_a$)
+  
+**Null hypothesis** is states that there is no effect or no difference($\mu = 0$). For instance there is no effect of standards of living to college admissions. **Alternate hypothesis** is the opposite and contradicts the null hypothesis. It provide evidence for what the statistician is trying to find($\mu \neq 0$). In this case, the standards of living have an effect on college admissions.
+
+The important aspects before conducting hypothesis testing are;-
+
+  - *Significance level.* It is the probability of rejecting the null hypothesis when it is actually true. 
+  - *P-Value* is the probability of obtaining a test statistic at least as extreme as the one observed, given the null hypothesis is true. Most hypothesis testing projects are set at 0.05. Less than 0.05(or the set value) indicates the null the test is statistically significant and the null hypothesis should be rejected. Otherwise, the test is statistically insignificant and the null hypothesis is not rejected. 
+  - *Test statistic* also called T-statistic is a standardized value calcluated during a hypothesis test. It cab z-test or a t-test.
+  -*Decision rule* is based on the calculated p-value and the significant level. In a hypothesis test where the significant and the p-value is 0.03444 the null hypothesis is not rejected. 
+
+Now that you are familiar with the hypothesis testing aspects, take the following steps to perform hypothesis testing;- 
+
+  i. Formulating the hypothesis by defining the null and alternate hypothesis.
+  ii. Collect and analyze the data. 
+  iii. Choose a significant level($a$) and calculate the p-value. 
+  iv. Make a decision by comparing the p-value to the significant level.
+  v. Conclude your analysis results. 
+  
+#### T-tests
+- *One-Sample t-test*
+
+One sample t-test is a statistical method used to find if the mean of a sample is different from the population(or preassumed) mean. 
+
+It is based on the t-distribution(most observations fall close to the mean, and the rest of the observations make up the tails on either side) and is commonly used when dealing with small sample sizes. One sample t-test is especially performed where the population standard deviation is unknown. 
+
+Below is the formula for one sample t-test
+$$t={{\overline{X}-\mu}\over s / \sqrt{n}}$$
+
+where;
+
+i. $t$: the one sample t-test value. t-test statistic
+ii. $n$: the number of the observations in the sample
+iii. $\overline{X}$: is the sample mean
+iv. $s$: standard deviation of the sample 
+v. $\mu$: Hypothesized population mean
+
+The result $t$, simply measures how many standard errors the sample mean is away from the hypothesized population mean. 
+
+Before conducting t-test, there is a need to establish the null(H0) and alternate hypothesis(Ha) where;
+
+- *Null Hypothesis(H0)*: There is no significant difference between the sample mean and the population(hypothesized) mean.
+- *ALternate Hypothesis(Ha)*: There is a significant difference between the sample mean and the population mean. 
+
+P-value is the probability value that tells you how likely is that your data could have occurred under null hypothesis. In our case a p-value of below  0.05 is considered to be statistically significant and the null value is rejected. The vice versa is true
+
+Lets perform a t-test using R;
+
+We will generate sample data
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Generate random student marks (out of 100)
+student_marks <- rnorm(30, mean = 65, sd = 10)
+
+# Display the first few marks
+head(student_marks)
+```
+
+Perform the t-test
+```{r}
+# Conduct one-sample t-test
+t_test_result <- t.test(student_marks, mu = 70)
+
+# Display the t-test result
+print(t_test_result)
+```
+<span style="color: green;">**Practical exercise**</span>
+
+Conduct one sample t-test on the sepal length of the setosa iris. The pre-assumed mean is 5.84 units.
+
+_______________________________________________________________________
+<span style="color: brown;">**Solution**</span> 
+
+- Null Hypothesis($H_0$): There is no significant difference between the setosa sepal length mean and the pre-assumed mean
+- Alternate Hypothesis($H_a$): There is a significant difference between the setosa sepal length and the pre-assumed mean
+
+**Note**: If the pre-assumed mean is not given in the question therefore the whole population mean is used(as the pre-assumed mean). In this case, the setosa sepal length mean of the whole iris species. 
+
+```{r}
+library(dplyr)
+# Load the data
+data(iris)
+
+# Get the setosa sepal length
+setosa <- iris %>% 
+  filter(Species=="setosa")
+
+setosa.sepal.length <- setosa$Sepal.Length
+
+# Calculate one-sample ttest 
+## Set the pre-assumed mean 
+pre_assumed_mean <- 5.84 # as in the question
+
+t_test_result <- t.test(setosa.sepal.length, mu = pre_assumed_mean)
+
+print(t_test_result)
+```
+
+The p-value is much below 0.05, therefore the null hypothesis is rejected. It is concluded that there is a significant difference between the sepal length mean and the pre-assumed mean
+
+<span style="color: brown;">**________________________________________________________________________________**</span>
+
+- *Two-Sample t-test*
+
+Unlike one sample t-test where a sample population is tested against a pre-assumed mean, the Tow-sample t-test determines if there is a significant difference between the means of two independent populations. 
+
+The practical application of two-sample t-test can be when comparing the test scores of two classes. This helps the statistician to understand if one class did better than the other one or it's just a matter of luck. 
+
+These are the prerequisites before conducting a two-sample t-test; 
+
+i. The groups contain separate data with a similar distribution.
+ii. The two populations have a normal(typical bell-curve) distribution.
+iii. The two sample populations have a similar variations
+
+The two sample t-test is calculated by;
+![](images/two-sample-ttest.jpg)
+
+Where;
+
+- $\overline{x}_1$ and $\overline{x}_2$ are the mean of the first sample and the second sample respectively
+- $s_{1}$ and $s_{2}$ are the standard deviation of sample 1 and sample 2 respectively
+- $n_1$ and $n_2$ are the sample sizes of the first and second sample respectively. 
+
+Let create a random population of student scores for two classes and perform two-sample t-test in R; 
+
+```{r}
+# Generate the population sample
+set.seed(123)
+group_A_scores <- rnorm(25, mean = 75, sd = 8)  # Group A
+group_B_scores <- rnorm(25, mean = 80, sd = 10)  # Group B
+
+# Display the first few scores of each group
+head(group_A_scores)
+head(group_B_scores)
+```
+
+Performing the two sample t-test. Lets set the confidence level to 95%(0.95)
+```{r}
+ttest_result = t.test(group_A_scores, group_B_scores, 
+                      alternative = "two.sided", mu = 0, paired = FALSE,
+                      var.equal = FALSE, conf.level = 0.95)
+
+ttest_result
+```
+
+* **t-value = -2.6403**: This indicates the difference between the means of the two groups, in terms of standard errors. A higher absolute value suggests a larger difference.
+* **Degrees of freedom (df) = 46.312**: This reflects the sample size and variability in the data.
+* **p-value = 0.01125**: Since the p-value is less than 0.05, we reject the null hypothesis. This suggests that the difference in means between Group A and Group B is statistically significant.
+* **95% confidence interval: (-11.08, -1.50)**: This indicates that we are 95% confident that the true difference in means lies between -11.08 and -1.50.
+* **Mean of x (Group A) = 74.73, Mean of y (Group B) = 81.02**: The average score of Group B is higher than Group A.
+
+In summary, the test shows a significant difference between the means of the two groups, with Group B having higher scores
+
+
+<span style="color: green;">**Practical exercise**</span>
+
+Using the iris data set, compare the petal length of the *versicolor* and *virginica* species using two-sample t-test. Interpret the results
+
+_______________________________________________________________________
+<span style="color: brown;">**Solution**</span> 
+
+Lets formulate the hypothesis;
+
+- Null Hypothesis($H_0$): There is no significant difference between the mean of virginica and the mean of versicolor
+- Alternate Hypothesis($H_a$): There is a significant difference between the mean of virginica and the versicolor
+
+```{r}
+library(dplyr)
+
+# Load the data 
+data(iris)
+
+# Retrieve the data for the two species 
+## Virginica petal length
+virginica <- iris%>% 
+  filter(Species=="virginica")
+
+virginica.petal.length <- virginica$Petal.Length
+
+## Versicolor petal length
+versicolor <- iris%>% 
+  filter(Species=="versicolor")
+
+versicolor.petal.length <- versicolor$Petal.Length
+
+# Conduct two-sample t-test
+ttest_result = t.test(virginica.petal.length, versicolor.petal.length, 
+                      alternative = "two.sided", mu = 0, paired = FALSE,
+                      var.equal = FALSE, conf.level = 0.95)
+
+ttest_result
+```
+
+With a p-value of less than 0.05, the null hypothesis is rejected. It is concluded that there is a significant difference between the mean of virginica species and the mean of versicolor species. 
+
+<span style="color: brown;">**________________________________________________________________________________**</span>
+
+#### ANOVA (Analysis of Variance)
+ANOVA is a statistical test used to analyze the difference between the means of more than two groups. This is different from the ttest that analyzes one or two groups, it uses F test to find the statistical significance. Multiple means are compared at once and if one mean is different the hypothesis is rejected. 
+
+The F test compares the variance in each group from the overal group variance. 
+
+An practical example of ANOVA is where a farmer wants to test the effect of three different fertilizers on the crop yield. The difference in the crop yield will be calculated. 
+
+Before conducting ANOVA, the following assumptions are made;
+
+i. **Independence of observations**: the data was collected using statistically valid sampling methods and there are no hidden relationships among the observations. 
+ii. **Normal distribution**: the dependent variable should follow a normal distribution.
+iii. **Homogeinity of variance**: All the groups being tested should have similar variations. 
+
+Lets calculate the ANOVA using the the crop yield data set. The fertilizer are in three categories; 1, 2 and 3
+```{r}
+# Load the data set 
+crop_df <- read.csv("data/cropdata.csv")
+head(crop_df) # view the first few rows of the data set
+
+# Calculate one way ANOVA 
+anova <- aov(yield ~ fertilizer, data = crop_df)
+anova
+```
+The ANOVA output provides insights into the variation in crop yield explained by the fertilizer type. Here’s a detailed breakdown of the results:
+
+* **Sum of Squares (fertilizer) = 5.74322**: This value represents the variation in crop yield that can be attributed to the different types of fertilizers used in the experiment. In this case, 5.74322 units of the total variation are explained by fertilizer differences.
+
+* **Sum of Squares (Residuals) = 36.21101**: This is the unexplained variation in crop yield, also known as the error term. This shows how much of the variation is due to factors not accounted for in the model, such as environmental factors or random error.
+
+* **Degrees of Freedom (fertilizer) = 1**: There is only 1 degree of freedom for the fertilizer factor, which means there was a comparison between two groups (likely two fertilizer types or one fertilizer versus a control).
+
+* **Degrees of Freedom (Residuals) = 94**: There are 94 degrees of freedom associated with the residuals. This is related to the total number of observations minus the number of groups being compared. In this case, the large degrees of freedom indicate a sizable data set.
+
+* **Residual Standard Error = 0.6206638**: This value represents the typical deviation of the observed yield values from the predicted values, given the current model. A lower residual standard error suggests a better fit of the model to the data, though this value needs to be interpreted in context.
+
+The results show that the fertilizer type explains some of the variation in crop yield (Sum of Squares = 5.74322), while a larger portion remains unexplained (Sum of Squares of Residuals = 36.21101). To fully interpret the significance of this effect, a p-value and F-statistic would typically be calculated, but these are not provided here. Additionally, the residual standard error (0.6206638) gives an indication of the spread of the data around the predicted values, but more information would be needed to assess the strength of the model’s fit.
+
+In conclusion, while the fertilizer has some effect on crop yield, the overall variability and potential unbalanced data need further exploration for a complete understanding.
+
+<span style="color: green;">**Practical exercise**</span>
+
+Perform ANOVA on the sepal width of the three species in the iris data set and interpret the results. 
+
+_______________________________________________________________________
+<span style="color: brown;">**Solution**</span> 
+
+Lets formulate the hypothesis;
+
+- Null Hypothesis($H_0$): There is no siginificant difference among the sepal width of all the iris species.
+- Alternate Hypothesis($H_a$): There is a signifincant difference among the sepal width of all the iris species
+
+```{r}
+# Load the data 
+data(iris)
+
+# Perform the ANOVA
+anova_result <- aov(Sepal.Width ~ Species, data = iris)
+
+# Display the ANOVA table
+summary(anova_result)
+```
+
+it indicates that there are statistically significant differences in the mean `Sepal.Width` between the species.
+
+<span style="color: brown;">**________________________________________________________________________________**</span>
+
+#### Chi-Square Test
+This is a statistical test that determines the difference between the observed and the expected data. It determines if the relationship between two categorical variables is due to chance or a relationship between them. 
+
+It is calculated by;
+$$x_{c}^{2} = \frac{\sum(O_{i}-E_{i})}{E_i}$$
+
+Where; 
+
+i. $c$ is the degree of freedom. This is a statistical calculation that represents the number of variables that can carry and is calculated to ensure the chi-square tests are statistically valid
+ii. $O$ is the observed value
+iii. $E$ is the expected value
+
+Lets perform Chi-square on a survey data from the `MASS` library. The survey data represents data from a survey conducted on students. 
+
+- Null Hypothesis ($H_0$): The smoking habit is independent of the student's exercise level
+- ALternate Hypothesis ($H_a$): The smoking habit is dependent on the exercise level.
+
+Load the data
+```{r}
+# Load the library
+library(MASS)
+
+head(survey) # view the data
+```
+
+Create a contigency table between the Smoke and the Exercise leel. 
+```{r}
+# Create a contingency table with the needed variables.       
+stu_data = table(survey$Smoke,survey$Exer) 
+                 
+print(stu_data)
+```
+
+Perform the chi-square test on the `stu_data`, the contigency table.
+```{r warning=FALSE}
+# applying chisq.test() function
+print(chisq.test(stu_data))
+```
+
+From the results, the p-value is 0.4828 which is greater than 0.05 therefore the null hypothesis is not rejected. It'c concluded that the smoking habit is independent of the exercise level since there is weak to now correlation between the `Smoke` and `Exer` variables. 
+
+Finally, lets visualize the results from the contigency table;
+```{r}
+# Visualize the data with a bar plot
+barplot(stu_data, beside = TRUE, col = c("lightblue", "lightgreen"),
+        main = "Smoking Habits vs Exercise Levels",
+        xlab = "Exercise Level", ylab = "Number of Students")
+ 
+# Add legend separately
+legend("center", legend = rownames(stu_data), fill = c("lightblue", "lightgreen"))
+```
+
+You can see from the table, those students who never smoke lead in every exercise level while the heavy smokers are the least in every group. 
+
+<span style="color: green;">**Practical exercise**</span>
+
+Using the Iris data set, perform a Chi-square test to determine if there is a relationship between two categorical variables: the species (Species) and a new categorical variable that classifies sepal width (Sepal.Length) into categories (e.g., "Short", "Medium", "Long").
+
+- "Short": below 3.0
+- "Medium": above 3.0 to 3.8
+- "Long": above 3.8
+
+Follow the steps below;
+
+1. Create a new variable `sepal.Width.Category` in the data set by categorizing the Sepal.Width variable into 3 categories: `"Short"`, `"Medium"`, and `"Long"` (as per the defined ranges).
+2. Perform a Chi-square test to see if there's an association between the new `sepal.Width.Category` categories and the `Species` column.
+3. Interpret the results of the Chi-square test
+
+_______________________________________________________________________
+<span style="color: brown;">**Solution**</span> 
+
+Load the data set
+```{r}
+data(iris) 
+```
+
+1. Create a new variable `sepal.Width.Category` in the data set by categorizing the `Sepal.Width` variable into 3 categories: `"Short"`, `"Medium"`, and `"Long"` (as per the defined ranges).
+```{r}
+# Load necessary libraries
+library(dplyr)
+
+# Create a new column 'Sepal_Width_Category' based on conditions
+iris <- iris %>%
+  mutate(sepal.Width.Category = case_when(
+    Sepal.Width < 3.0 ~ "Short",
+    Sepal.Width >= 3.0 & Sepal.Width <= 3.8 ~ "Medium",
+    Sepal.Width > 3.8 ~ "Long"
+  ))
+
+# Display the first few rows to see the new column
+head(iris)
+```
+
+2. Perform a Chi-square test to see if there’s an association between the new `sepal.Width.Category` categories and the `Species` column.
+
+```{r}
+# Create a contigency table 
+sepal_width_data = table(iris$sepal.Width.Category,iris$Species) 
+
+print(sepal_width_data)
+
+# applying chisq.test() function
+print(chisq.test(sepal_width_data))
+```
+**Intepret the results**
+
+<span style="color: brown;">**________________________________________________________________________________**</span>
+
+## <span style="color: green;">**Hands-on Exercise**</span> 
+
+You are required to download the Groundhog Day Forecasts and Temperatures data set from [here](https://www.kaggle.com/datasets/groundhogclub/groundhog-day).
+
+- Perform one sample t-test on February Average temperature. The pre-assumed mean is 35
+- Conduct two sample t-test between the North East average temperature for March and the overall March daily temperature 
+- Perform ANOVA between the presence of Punxsutawney Phil and the February average temperature
+
+Interpret the results
+
+_______________________________________________________________________
+<span style="color: brown;">**Solution**</span> 
+
+Load the data
+```{r}
+df <- read.csv("data/GroundhogDayForecastsandTemperaturesdata.csv")
+```
+
+- Perform one sample t-test on February Average temperature. The pre-assumed mean is 35
+
+Formulate the hypothesis 
+- Null hypothesis ($H_0$): There is no significant difference between the February Average Temeprature mean and the pre-assumed mean
+- Alternate Hypothesis($H_a$): There is a significant difference between the February Average Temperature and the pre-assumed mean. 
+
+```{r}
+one.sample.ttest <- t.test(df$February.Average.Temperature, mu=35)
+
+# Display the results 
+print(one.sample.ttest)
+```
+
+The p-value is below 0.05, therefore the is enough evidence to reject the null hypothesis and conclude that there is a significant difference between the February Average Temperature and the pre-assumed mean(35). 
+
+- Conduct two sample t-test between the North East average temperature for March and the overall March daily temperature.
+
+Formulate the hypothesis:
+
+- Null hypothesis($H_0$): There is no significant difference between the North East Average Temperature for March and the March daily temparature.
+- ALternate Hypothesis($H_a$): There is a significant difference between the North East Average Temperature and the March daily temparature.
+```{r}
+# Perform two sample ttest
+ttest_result = t.test(df$March.Average.Temperature..Northeast., 
+                      df$March.Average.Temperature, 
+                      alternative = "two.sided", mu = 0, paired = FALSE,
+                      var.equal = FALSE, conf.level = 0.95)
+
+ttest_result
+```
+The p-value is less than 0.05, therefore the null hypothesis is rejected. It is concluded that there is significant difference between the  North East Average Temperature for March and overall Average daily Temperature for March
+
+- Perform ANOVA between the presence of Punxsutawney Phil and the February average temperature
+
+Formulate the hypothesis 
+
+- Null Hypothesis($H_0$): There is no significant difference between the presence and the absence of Punxsutawney Phil during February based on the Average Temperature
+- Alternate Hypothesis($H_a$): There is a significant difference between the presence and the absence of Punxsutawney Phil during February based on the Average Temperature
+```{r}
+# Perform ANOVA
+anova_result <- aov(February.Average.Temperature ~ df$Punxsutawney.Phil, data = df)
+
+# Display the ANOVA table
+summary(anova_result)
+```
+
+<span style="color: brown;">**________________________________________________________________________________**</span>
+
+
+
